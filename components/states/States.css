@@ -1,28 +1,74 @@
 .states {
   padding: 20px;
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
-.states-input {
-  padding: 8px;
-  width: 100%;
+.states__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
 }
 
-.states-substring {
+.states__title {
+  margin: 0;
+  font-size: 28px;
+}
+
+.states__input {
+  width: 360px;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
   font-size: 14px;
-  margin-bottom: 10px;
+  outline: none;
 }
 
-.states-list {
-  list-style-type: disc;
+.states__input:focus {
+  border-color: #bdbdbd;
+}
+
+.states__info {
+  margin: 10px 0 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+.states__chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #e6e6e6;
+  background: #fafafa;
+  margin-left: 8px;
+  min-width: 26px;
+  text-align: center;
+}
+
+.states__count {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.states__list {
+  list-style: disc;
   padding-left: 20px;
+  margin: 0;
 }
 
-.states-empty {
-  color: red;
-  font-weight: bold;
+.states__item {
+  padding: 4px 0;
+}
+
+.states__empty {
+  padding: 14px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 12px;
+  background: #fafafa;
+  color: #444;
 }

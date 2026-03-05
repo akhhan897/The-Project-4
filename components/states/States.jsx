@@ -6,58 +6,93 @@ import "./States.css";
 class States extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      substring: ""
-    };
+    this.state = { substring: "" };
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange = (event) => {
-    this.setState({ substring: event.target.value });
-  };
+  handleChange(e) {
+    this.setState({ substring: e.target.value });
+  }
+
+  // Supports multiple possible model shapes safely
+  getAllStates() {
+    const models = window.models || {};
+
+    // Most likely: window.models.states is an array
+    if (Array.isArray(models.states)) return models.states;
+
+    // Sometimes: window.models.states.states is an array
+    if (models.states && Array.isArray(models.states.states)) return models.states.states;
+
+    // Sometimes: window.models.states is an object keyed by id
+    if (models.states && typeof models.states === "object") {
+      const vals = Object.values(models.states);
+      if (vals.length && typeof vals[0] === "object") return vals;
+    }
+
+    return [];
+  }
+
+  normalizeName(s) {
+    if (!s) return "";
+    if (typeof s === "string") return s;
+    if (typeof s.name === "string") return s.name;
+    return String(s.name || "");
+  }
+
+  getKey(s, idx) {
+    const id = s && (s._id || s.id || s.abbr || s.code);
+    if (id !== undefined && id !== null) return String(id);
+    return `${this.normalizeName(s)}-${idx}`;
+  }
 
   render() {
-    const substring = this.state.substring.toLowerCase();
+    const allStates = this.getAllStates();
+    const raw = this.state.substring;
+    const q = raw.trim().toLowerCase();
 
-    // Get model data from window.models
-    const states = window.models.states;
-
-    // Filter + sort alphabetically
-    const filteredStates = states
-      .filter(state =>
-        state.name.toLowerCase().includes(substring)
-      )
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const filtered = allStates
+      .filter((s) => {
+        const name = this.normalizeName(s).toLowerCase();
+        return q === "" ? true : name.includes(q);
+      })
+      .sort((a, b) => this.normalizeName(a).localeCompare(this.normalizeName(b)));
 
     return (
-      <div className="states">
-        <h2>States View</h2>
+      <section className="states">
+        <div className="states__header">
+          <h2 className="states__title">States View</h2>
 
-        <input
-          type="text"
-          placeholder="Enter substring..."
-          value={this.state.substring}
-          onChange={this.handleChange}
-          className="states-input"
-        />
+          <input
+            className="states__input"
+            type="text"
+            value={raw}
+            onChange={this.handleChange}
+            placeholder="Type a substring (e.g., al)"
+          />
+        </div>
 
-        <p className="states-substring">
-          Current substring: <strong>{this.state.substring}</strong>
-        </p>
+        <div className="states__info">
+          Substring used:
+          <span className="states__chip">{raw}</span>
+        </div>
 
-        {filteredStates.length === 0 ? (
-          <p className="states-empty">
-            No states match that substring.
-          </p>
+        <div className="states__count">
+          Showing {filtered.length} of {allStates.length}
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="states__empty">No states match that substring.</div>
         ) : (
-          <ul className="states-list">
-            {filteredStates.map(state => (
-              <li key={state._id}>
-                {state.name}
+          <ul className="states__list">
+            {filtered.map((s, idx) => (
+              <li key={this.getKey(s, idx)} className="states__item">
+                {this.normalizeName(s)}
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </section>
     );
   }
 }
