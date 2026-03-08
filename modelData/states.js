@@ -1,4 +1,4 @@
-"use strict";
+
 
 /*
  * Load the model data for Project 4, Problem 2. We load into the property

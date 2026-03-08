@@ -1,12 +1,13 @@
-'use strict';
-
 import React from "react";
 import "./States.css";
 
 class States extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { substring: "" };
+    this.state = {
+      substring: "",
+      allStates: this.loadStates(),
+    };
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -14,7 +15,8 @@ class States extends React.Component {
     this.setState({ substring: e.target.value });
   }
 
-  getAllStates() {
+  /* eslint-disable-next-line class-methods-use-this */
+  loadStates() {
     const models = window.models || {};
     const raw = models.states;
 
@@ -23,20 +25,23 @@ class States extends React.Component {
       return Array.isArray(result) ? result : [];
     }
 
-    if (Array.isArray(raw)) return raw;
+    if (Array.isArray(raw)) {
+      return raw;
+    }
 
     return [];
   }
 
   render() {
-    const allStates = this.getAllStates();
-    const typed = this.state.substring;
-    const q = typed.trim().toLowerCase();
+    const { substring, allStates } = this.state;
+    const q = substring.trim().toLowerCase();
 
     const filtered = allStates
       .filter((name) => {
         const n = String(name).toLowerCase();
-        if (q === "") return true;
+        if (q === "") {
+          return true;
+        }
         return n.includes(q);
       })
       .sort((a, b) => String(a).localeCompare(String(b)));
@@ -49,7 +54,7 @@ class States extends React.Component {
           <input
             className="states__input"
             type="text"
-            value={typed}
+            value={substring}
             onChange={this.handleChange}
             placeholder="Type a substring (e.g., al)"
           />
@@ -57,7 +62,7 @@ class States extends React.Component {
 
         <div className="states__info">
           Substring used:
-          <span className="states__chip">{typed}</span>
+          <span className="states__chip">{substring}</span>
         </div>
 
         <div className="states__count">
