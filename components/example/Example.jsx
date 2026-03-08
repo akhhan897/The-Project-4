@@ -1,3 +1,5 @@
+'use strict';
+
 import React from 'react';
 import './Example.css';
 
@@ -18,11 +20,14 @@ class Example extends React.Component {
   constructor(props) {
     super(props); // Must run the constructor of React.Component first
 
+    const modelData = window.models.exampleModel();
+
     // Components have a special property named "state" that holds state.
     // We can initialize it here.
     // We read the example model data into the state variable 'name'
     this.state = {
-      name: window.models.exampleModel().name,
+      name: modelData.name,
+      motto: modelData.motto,
       counter: 0,
       inputValue: '',
       buttonWasClicked: '',
@@ -33,6 +38,7 @@ class Example extends React.Component {
     // generate new functions that handle the event by just calling
     // the method that handles the event.
     this.handleChangeBound = event => this.handleChange(event);
+    this.handleMottoChangeBound = event => this.handleMottoChange(event);
     // Note: A commmon idiom in React code is to use JavaScript bind() to
     // smash the method to accomplish this passthrough to the method:
     //      this.handleChange = this.handleChange.bind(this);
@@ -69,6 +75,10 @@ class Example extends React.Component {
     this.setState({ inputValue: event.target.value });
   }
 
+  handleMottoChange(event) {
+    this.setState({ motto: event.target.value });
+  }
+
   // Method called when the button is pushed
   /* eslint-disable-next-line no-unused-vars */
   handleButtonClick(buttonName, event) {
@@ -103,7 +113,15 @@ class Example extends React.Component {
         <h1>Project 4 React.js Example</h1>
 
         <div className="motto-update">
-          {/* Your problem #1 motto displaying and updating widget goes here */}
+          <h3>{this.state.name}</h3>
+          <p className="motto-text">{this.state.motto}</p>
+          <label htmlFor="mottoInput">Update Motto: </label>
+          <input
+            id="mottoInput"
+            type="text"
+            value={this.state.motto}
+            onChange={this.handleMottoChangeBound}
+          />
         </div>
 
         <p>
